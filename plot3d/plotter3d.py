@@ -20,7 +20,7 @@ example:
 '''
 
 
-def torch_plot3d(title, x_vector, y_vector, model):
+def torch_plotplane3d(title, x_vector, y_vector, model):
     """
     A  method that takes in the vectors from a torch optimization and plots it in 3d.
     title = String

@@ -70,4 +70,4 @@ def visualize_nand():
     model.W = model.W.detach()
     model.b = model.b.detach()
 
-    plot.torch_plot3d("NAND", x_train[:, 0], x_train[:, 1], model)
+    plot.torch_plotplane3d("NAND", x_train[:, 0], x_train[:, 1], model)
