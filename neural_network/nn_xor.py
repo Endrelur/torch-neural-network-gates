@@ -5,20 +5,24 @@ modellvariablene med tilfeldige tall for eksempel mellom -1 og
 1. Visualiser både når optimaliseringen konvergerer og ikke
 konvergerer mot en riktig modell.
 '''
+from matplotlib.pyplot import get
 import torch
 from torch import float32
+from torch.cuda import random
 import torch.nn.functional as func
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d, art3d
-import numpy as np
+import random
 import plot3d.plotter3d as plotter
 
 
-STEP_SIZE = 0.01
-EPOCH_AMOUNT = 100000
+STEP_SIZE = 0.1
+EPOCH_AMOUNT = 1000000
 
 
-device = ("cuda" if not torch.cuda.is_available() else "cpu")
+device = ("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def get_rand():
+    return random.uniform(-1, 1)
 
 
 class SigmoidModel:
@@ -26,14 +30,14 @@ class SigmoidModel:
     def __init__(self):
         # Initialize the model variables with the same
         # floats between 1, -1 generated with random.uniform(-1,1)
-        self.W1 = torch.tensor([[-0.6545, -0.2611], [-0.5811, -0.8523]], requires_grad=True,
+        self.W1 = torch.tensor([[get_rand(), get_rand()], [get_rand(), get_rand()]], requires_grad=True,
                                dtype=float32, device=device)
-        self.b1 = torch.tensor([0.0882], requires_grad=True,
+        self.b1 = torch.tensor([get_rand(), get_rand()], requires_grad=True,
                                dtype=float32, device=device)
 
-        self.W2 = torch.tensor([[-0.5114], [0.0328]], requires_grad=True,
+        self.W2 = torch.tensor([[get_rand()], [get_rand()]], requires_grad=True,
                                dtype=float32, device=device)
-        self.b2 = torch.tensor([0.7551], requires_grad=True,
+        self.b2 = torch.tensor([get_rand()], requires_grad=True,
                                dtype=float32, device=device)
 
     def f(self, x):
@@ -52,7 +56,6 @@ def visualize_xor():
     # input for the XOR operator
     observed_input = [[0, 0], [0, 1], [1, 0], [1, 1]]
     observed_output = [[0], [1], [1], [0]]
-    plt.plot(observed_input, observed_output, 'o', label='$(x^{(i)},y^{(i)})$')
 
     x_train = torch.tensor(observed_input, dtype=float32, device=device)
     y_train = torch.tensor(observed_output, dtype=float32, device=device)
@@ -82,5 +85,5 @@ def visualize_xor():
     model.W2 = model.W2.detach().to("cpu")
     model.b2 = model.b2.detach().to("cpu")
 
-    plotter.torch_plot("xor", x_train[:, 0],
-                       x_train[:, 1], model=model)
+    plotter.torch_plotplane3d("xor", x_train[:, 0],
+                              x_train[:, 1], model)
