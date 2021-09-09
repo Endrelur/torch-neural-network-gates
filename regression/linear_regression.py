@@ -1,8 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import torch.nn.functional as function
-from mpl_toolkits import mplot3d
-import numpy as np
+import plot3d.plotter3d as plotter
 
 '''
 Tar imot både 2 og 3D datasett og utfører lineær regresjon på de.
@@ -12,7 +11,7 @@ Tar imot både 2 og 3D datasett og utfører lineær regresjon på de.
 EPOCH_AMOUNT_2D = 100000
 STEP_SIZE_2D = 0.00015
 
-EPOCH_AMOUNT_3D = 1500000
+EPOCH_AMOUNT_3D = 150000
 STEP_SIZE_3D = 0.00011
 
 
@@ -134,16 +133,14 @@ def linear3d(data_list):
     print("W = %s, b = %s, loss = %s" %
           (model.W[0].item(), model.b[0].item(), model.loss(x, y).item()))
 
-    x = x.to("cpu").numpy()
-    y = y.to("cpu").numpy()
-    model.W = model.W.to("cpu").detach().numpy()
-    model.b = model.b.to("cpu").detach().numpy()
+    x = x.to("cpu")
+    y = y.to("cpu")
+    model.W = model.W.to("cpu").detach()
+    model.b = model.b.to("cpu").detach()
 
-    plot = plt.axes(projection="3d")
-    plot.plot3D(x[:, 0], x[:, 1], y[:, 0], 'o')
-    plot.set_xlabel(headers[1])
-    plot.set_ylabel(headers[2])
-    plot.set_zlabel(headers[0])
+    plotter.torch_plotplane3d_withpoints(
+        "3D Linear Regression", x[:, 0], x[:, 1], y[:, 0], model)
+
     plt.show()
 
 
